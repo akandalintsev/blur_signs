@@ -2,9 +2,7 @@ import os
 import numpy as np
 import sys
 import cv2
-# Import license plate recognition tools.
 from NomeroffNet.YoloV5Detector import Detector
-# from NomeroffNet.OptionsDetector import OptionsDetector
 from NomeroffNet.TextDetector import TextDetector
 
 from NomeroffNet import TextDetector
@@ -38,17 +36,18 @@ textDetector = TextDetector.get_static_module("eu")
 textDetector.load("latest")
 
 # Detect numberplate
+frame_nums = []
 xx = []
 yy = []
 
-for img_path in img_paths:
+for img_no, img_path in enumerante(img_paths):
     img = cv2.imread(img_path)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     targetBoxes = detector.detect_bbox(img)
 
     for targetBox in targetBoxes:
+        frame_nums.append(img_no)
         xx.append(int(min(targetBox[0], targetBox[2])))
         yy.append(int(min(targetBox[1], targetBox[3])))
 
-print(xx)
-print(yy)
+result = zip(frame_nums, xx, yy)
